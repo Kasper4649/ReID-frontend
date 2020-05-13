@@ -1,66 +1,85 @@
 <template>
-  <div class="home">
-    <v-container fluid><h1>行人重识别系统</h1></v-container>
-    <v-card
-      class="mx-auto"
-      max-width="1000"
-    >
-      <v-card-title class="title font-weight-regular justify-space-between">
-        <span>{{ currentTitle }}</span>
-        <v-avatar
-          color="primary lighten-2"
-          class="subheading white--text"
-          size="24"
-          v-text="step"
-        ></v-avatar>
-      </v-card-title>
+    <v-content>
+      <v-container class="fill-height" fluid>
+        <v-row
+          align="center"
+          justify="center">
+          <v-col
+            cols="15"
+            sm="10"
+            md="7"
+          >
+            <h1
+              class="title font-weight-bold ma-3 text-center"
+              @click="step=1"
+            >
+              Person Re-Identification
+            </h1>
 
-      <v-window v-model="step">
-        <v-window-item :value="1">
-          <query></query>
-        </v-window-item>
+            <v-card
+              class="mx-auto"
+              max-width="2000"
+            >
+              <v-card-title class="title font-weight-regular justify-space-between">
+                <span>{{ currentTitle }}</span>
+                <v-avatar
+                  color="black lighten-2"
+                  class="subheading white--text"
+                  size="24"
+                  v-text="step"
+                ></v-avatar>
+              </v-card-title>
 
-        <v-window-item :value="2">
-          <search></search>
-        </v-window-item>
+              <v-window v-model="step">
+                <v-window-item :value="1">
+                  <div class="pa-4 text-center">
+                    <query></query>
+                  </div>
+                </v-window-item>
 
-        <v-window-item :value="3">
-          <div class="pa-4 text-center">
-            <v-img
-              class="mb-4"
-              contain
-              height="128"
-              src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-            ></v-img>
-            <h3 class="title font-weight-light mb-2">Welcome to Vuetify</h3>
-            <span class="caption grey--text">Thanks for signing up!</span>
-          </div>
-        </v-window-item>
-      </v-window>
+                <v-window-item :value="2">
+                  <div class="pa-4 text-center">
+                    <search></search>
+                  </div>
+                </v-window-item>
 
-      <v-divider></v-divider>
+                <v-window-item :value="3">
+                  <div class="pa-4 text-center">
+                    <v-img
+                      class="mb-4"
+                      contain
+                      height="128"
+                      src="https://cdn.vuetifyjs.com/images/logos/v.svg"
+                    ></v-img>
+                    <h3 class="title font-weight-light mb-2">Welcome to Vuetify</h3>
+                    <span class="caption grey--text">Thanks for signing up!</span>
+                  </div>
+                </v-window-item>
+              </v-window>
 
-      <v-card-actions>
-        <v-btn
-          :disabled="step === 1"
-          text
-          @click="step--"
-        >
-          Cancel
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn
-          :disabled="step === 3"
-          color="primary"
-          depressed
-          @click="step++"
-        >
-          Next
-        </v-btn>
-      </v-card-actions>
-    </v-card>
+              <v-divider></v-divider>
 
-  </div>
+              <v-card-actions v-if="step !== 3">
+                <v-btn
+                  text
+                  @click="step--"
+                >
+                  Cancel
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  @click="step++"
+                >
+                  Next
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
 </template>
 
 <script>
@@ -76,7 +95,8 @@ export default {
   data: () => ({
     step: 1,
   }),
-
+  methods: {
+  },
   computed: {
     currentTitle() {
       switch (this.step) {
