@@ -1,64 +1,98 @@
 <template>
   <div class="query">
-    <v-file-input
-      v-model="file"
-      color="accent-4"
-      counter
-      label="File input"
-      placeholder="Select your files"
-      prepend-icon="mdi-paperclip"
-      outlined
-      accept="video/*"
-      clearable
-      :show-size="1000"
-    >
-    </v-file-input>
-    <div class="player" v-if="file !== []">
-    <video-player
-      class="vjs-custom-skin"
-      ref="videoPlayer"
-      :options="playerOptions"
-      :playsinline="true"
-    >
-    </video-player>
-   </div>
 
-    <vueCropper
-      ref="cropper"
-      :img="option.img"
-      :outputSize="option.size"
-      :outputType="option.outputType"
-    ></vueCropper>
+    <div class="input" v-if="!videoSrc">
+      <v-file-input
+        @change="handleChangeVideoInput"
+        color="accent-4"
+        label="File input"
+        placeholder="Select your file"
+        prepend-icon="mdi-paperclip"
+        outlined
+        accept="video/*"
+        clearable
+        v-model="files"
+      >
+      </v-file-input>
+    </div>
+    <div class="screenshot" v-if="videoSrc">
+      <video
+        height="300"
+        :src="videoSrc"
+        ref="video"
+        controls
+      ></video>
+
+      <v-btn
+        text
+        @click="screenShot"
+      >
+        screenShot
+      </v-btn>
+
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-card>
+          <v-img :src="imgSrc"></v-img>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+            <v-btn color="blue darken-1" text @click="saveScreenShot">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-img :src="img" v-for="img in imgs" :key="img+1"></v-img>
+<!--      <vue-cropper-->
+<!--        ref="cropper"-->
+<!--        v-for="img in imgs"-->
+<!--        :img="img"-->
+<!--        :key="img"-->
+<!--      >-->
+<!--      </vue-cropper>-->
+    </div>
   </div>
 </template>
 
 <script>
-import { VueCropper } from 'vue-cropper';
-import { videoPlayer } from 'vue-video-player';
-import 'video.js/dist/video-js.css';
+// import { VueCropper } from 'vue-cropper';
+require('../assets/poster.js');
 
 export default {
   name: 'Query',
   components: {
-    VueCropper,
-    videoPlayer,
+    // VueCropper,
   },
   data: () => ({
-    file: [],
-    playerOptions: {
-      height: 360,
-      muted: true,
-      sources: [{
-        type: 'video/mp4',
-        src: '',
-      }],
-    },
-    option: {
-      // 'img': 'https://cdn.vuetifyjs.com/images/logos/v.svg',
-    },
+    dialog: false,
+    files: [],
+    videoSrc: '',
+    imgSrc: '',
+    imgs: [],
   }),
-  mounted() {
-    console.log('this is current player instance object', this.player);
+  methods: {
+    handleChangeVideoInput() {
+      const file = this.files;
+      const reader = new FileReader();
+      reader.onload = event => {
+        this.videoSrc = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    screenShot() {
+      let video = this.$refs.video;
+      let _this = this;
+      window.$poster.videoScreenshot(video, video.currentTime, function (err, res) {
+        if (err) {
+          return alert(err.message);
+        }
+        _this.imgSrc = URL.createObjectURL(res[0].blob);
+      })
+      this.dialog = true;
+    },
+    saveScreenShot() {
+      this.imgs.push(this.imgSrc);
+      this.dialog = false;
+    },
   },
 };
 </script>

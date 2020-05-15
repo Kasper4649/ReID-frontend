@@ -63,6 +63,7 @@
                 <v-btn
                   text
                   @click="step--"
+                  v-if="step !== 1"
                 >
                   Cancel
                 </v-btn>
