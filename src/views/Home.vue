@@ -45,14 +45,7 @@
 
                 <v-window-item :value="3">
                   <div class="pa-4 text-center">
-                    <v-img
-                      class="mb-4"
-                      contain
-                      height="128"
-                      src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-                    ></v-img>
-                    <h3 class="title font-weight-light mb-2">Welcome to Vuetify</h3>
-                    <span class="caption grey--text">Thanks for signing up!</span>
+                    <detect></detect>
                   </div>
                 </v-window-item>
               </v-window>
@@ -86,18 +79,18 @@
 <script>
 import Query from '../components/Query.vue';
 import Search from '../components/Search.vue';
+import Detect from '../components/Detect.vue';
 
 export default {
   name: 'Home',
   components: {
     Query,
     Search,
+    Detect,
   },
   data: () => ({
     step: 1,
   }),
-  methods: {
-  },
   computed: {
     currentTitle() {
       switch (this.step) {

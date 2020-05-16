@@ -21,7 +21,8 @@
         :src="videoSrc"
         ref="video"
         controls
-      ></video>
+      >
+      </video>
 
       <v-btn
         text
@@ -31,8 +32,16 @@
       </v-btn>
 
       <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card>
-          <v-img :src="imgSrc"></v-img>
+        <v-card height="400px" width="400px">
+          <vueCropper
+            ref="cropper"
+            :img="imgSrc"
+            :outputType="option.outputType"
+            :info="true"
+            :autoCrop="option.autoCrop"
+            :centerBox="option.centerBox"
+            :high="option.high"
+          ></vueCropper>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
@@ -42,25 +51,19 @@
       </v-dialog>
 
       <v-img :src="img" v-for="img in imgs" :key="img+1"></v-img>
-<!--      <vue-cropper-->
-<!--        ref="cropper"-->
-<!--        v-for="img in imgs"-->
-<!--        :img="img"-->
-<!--        :key="img"-->
-<!--      >-->
-<!--      </vue-cropper>-->
+
     </div>
   </div>
 </template>
 
 <script>
-// import { VueCropper } from 'vue-cropper';
+import { VueCropper } from 'vue-cropper';
 require('../assets/poster.js');
 
 export default {
   name: 'Query',
   components: {
-    // VueCropper,
+    VueCropper,
   },
   data: () => ({
     dialog: false,
@@ -68,6 +71,13 @@ export default {
     videoSrc: '',
     imgSrc: '',
     imgs: [],
+    option: {
+      outputType: "png",
+      autoCrop: true,
+      // 只有自动截图开启 宽度高度才生效
+      centerBox: true,
+      high: false,
+    },
   }),
   methods: {
     handleChangeVideoInput() {
@@ -90,8 +100,13 @@ export default {
       this.dialog = true;
     },
     saveScreenShot() {
-      this.imgs.push(this.imgSrc);
+      let _this = this;
+      this.$refs.cropper.getCropBlob((data) => {
+        _this.imgs.push(URL.createObjectURL(data));
+      })
       this.dialog = false;
+      console.log(this.imgs);
+      console.log(this.imgSrc);
     },
   },
 };
