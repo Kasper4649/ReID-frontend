@@ -1,9 +1,17 @@
 import request from './axios';
 
-const query = ({ files }) => request.post('query', { files });
-const search = ({ file }) => request.post('search', { file });
+export function query(files) {
+  return request({
+    url: 'query',
+    method: 'post',
+    data: files
+  })
+}
+export function search(file) {
+  return request({
+    url: 'search',
+    method: 'post',
+    data: file
+  })
+}
 
-export default {
-  query,
-  search,
-};

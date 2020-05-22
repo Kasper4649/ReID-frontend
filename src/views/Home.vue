@@ -63,7 +63,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   text
-                  @click="step++"
+                  @click="commit()"
                 >
                   Next
                 </v-btn>
@@ -80,6 +80,8 @@
 import Query from '../components/Query.vue';
 import Search from '../components/Search.vue';
 import Detect from '../components/Detect.vue';
+
+import { query, search } from '../api/api.js';
 
 export default {
   name: 'Home',
@@ -100,6 +102,37 @@ export default {
           return 'Search';
         default:
           return 'Object Detected';
+      }
+    },
+  },
+  methods: {
+    commit() {
+      let _this = this;
+      switch (_this.step) {
+        case 1:
+          let files = this.$store.state.screenShots;
+          let params = new FormData();
+          for(let i = 0; i < files.length; i++) {
+            params.append('files', files[i]);
+          }
+          query(params).then(res => {
+            console.log(res);
+            _this.step++;
+          }).catch(err => {
+            console.log(err);
+          });
+          return
+        case 2:
+          let file = this.$store.state.uploadedVideo;
+          let param = new FormData();
+          param.append('file', file);
+          search(param).then(res => {
+            console.log(res);
+            _this.step++;
+          }).catch(err => {
+            console.log(err);
+          });
+          return
       }
     },
   },

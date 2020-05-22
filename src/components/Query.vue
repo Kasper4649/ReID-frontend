@@ -32,7 +32,7 @@
       </v-btn>
 
       <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card height="400px" width="400px">
+        <v-card height="500px" width="500px">
           <vueCropper
             ref="cropper"
             :img="imgSrc"
@@ -42,6 +42,7 @@
             :centerBox="option.centerBox"
             :high="option.high"
           ></vueCropper>
+          <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
@@ -50,7 +51,35 @@
         </v-card>
       </v-dialog>
 
-      <v-img :src="img" v-for="img in imgs" :key="img+1"></v-img>
+      <div class="img" v-if="imgSrc !== []">
+        <v-row>
+          <v-col cols="6" md="8" offset-md="2">
+            <v-card>
+              <v-container fluid>
+                <v-row>
+                  <v-col
+                    class="d-flex child-flex"
+                    cols="5"
+                    v-for="img in imgs"
+                    :key="img"
+                  >
+                    <v-card flat tile class="d-flex">
+                      <v-img
+                        :src="img"
+                        aspect-ratio="1"
+                        contain
+                        max-height="300px"
+                        class="lighten-2"
+                      >
+                      </v-img>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
 
     </div>
   </div>
@@ -69,12 +98,14 @@ export default {
     dialog: false,
     files: [],
     videoSrc: '',
+    videoTime: '',
     imgSrc: '',
     imgs: [],
+    screenShots: [],
     option: {
       outputType: "png",
       autoCrop: true,
-      // 只有自动截图开启 宽度高度才生效
+      // 只有自动截图开启宽度高度才生效
       centerBox: true,
       high: false,
     },
@@ -95,6 +126,7 @@ export default {
         if (err) {
           return alert(err.message);
         }
+        _this.videoTime = video.currentTime;
         _this.imgSrc = URL.createObjectURL(res[0].blob);
       })
       this.dialog = true;
@@ -103,10 +135,13 @@ export default {
       let _this = this;
       this.$refs.cropper.getCropBlob((data) => {
         _this.imgs.push(URL.createObjectURL(data));
+        _this.screenShots.push(
+          new File([data], parseInt(_this.videoTime)*25+'', { type: 'image/png' })
+        );
       })
       this.dialog = false;
-      console.log(this.imgs);
-      console.log(this.imgSrc);
+      this.$store.commit('SET_SCREENSHOTS', this.screenShots);
+      console.log(this.screenShots);
     },
   },
 };

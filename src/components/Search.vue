@@ -40,5 +40,11 @@ export default {
   data: () => ({
     files: [],
   }),
+  watch: {
+    files(newVal) {
+      console.log(newVal);
+      this.$store.commit('SET_UPLOADED_VIDEO', newVal);
+    }
+  }
 };
 </script>
