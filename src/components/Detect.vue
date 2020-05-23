@@ -1,9 +1,26 @@
 <template>
-  <h1>123</h1>
+  <div class="detect">
+    <div class="screenshot">
+      <video
+        height="300"
+        :src="videoSrc"
+        ref="video"
+        controls
+      >
+      </video>
+    </div>
+  </div>
+
 </template>
 
 <script>
   export default {
-    name: 'Detect'
+    name: 'Detect',
+    data: () => ({
+      videoSrc: '',
+    }),
+    mounted() {
+      this.videoSrc = this.$store.state.markedVideo;
+    }
   };
 </script>

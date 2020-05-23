@@ -72,8 +72,25 @@
 
           </v-col>
         </v-row>
+        <v-snackbar
+          v-model="snackbar"
+          :color="color"
+          top
+          right
+          :timeout="timeout"
+        >
+          {{ text }}
+          <v-btn
+            text
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </v-snackbar>
       </v-container>
     </v-content>
+
+
 </template>
 
 <script>
@@ -91,7 +108,11 @@ export default {
     Detect,
   },
   data: () => ({
-    step: 1,
+    step: 2,
+    snackbar: false,
+    text: '',
+    color: '',
+    timeout: 3000,
   }),
   computed: {
     currentTitle() {
@@ -111,26 +132,48 @@ export default {
       switch (_this.step) {
         case 1:
           let files = this.$store.state.screenShots;
+          if (files.length === 0) {
+            _this.text = '需提供欲检索的行人图像;)';
+            _this.snackbar = true;
+            _this.color = 'error';
+            return
+          }
           let params = new FormData();
           for(let i = 0; i < files.length; i++) {
             params.append('files', files[i]);
           }
           query(params).then(res => {
-            console.log(res);
+            _this.text = res.data.message;
+            _this.snackbar = true;
+            _this.color = 'success';
             _this.step++;
           }).catch(err => {
-            console.log(err);
+            _this.text = err;
+            _this.snackbar = true;
+            _this.color = 'error';
           });
           return
         case 2:
           let file = this.$store.state.uploadedVideo;
+          if (file.length === 0) {
+            _this.text = '需提供欲搜寻的视频;)';
+            _this.snackbar = true;
+            _this.color = 'error';
+            return
+          }
           let param = new FormData();
           param.append('file', file);
           search(param).then(res => {
             console.log(res);
+            _this.$store.commit('SET_MARKED_VIDEO', res.data.url)
+            _this.text = res.data.message;
+            _this.snackbar = true;
+            _this.color = 'success';
             _this.step++;
           }).catch(err => {
-            console.log(err);
+            _this.text = err;
+            _this.snackbar = true;
+            _this.color = 'error';
           });
           return
       }

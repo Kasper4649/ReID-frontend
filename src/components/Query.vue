@@ -112,8 +112,8 @@ export default {
   }),
   methods: {
     handleChangeVideoInput() {
-      const file = this.files;
-      const reader = new FileReader();
+      let file = this.files;
+      let reader = new FileReader();
       reader.onload = event => {
         this.videoSrc = event.target.result;
       };
@@ -141,7 +141,6 @@ export default {
       })
       this.dialog = false;
       this.$store.commit('SET_SCREENSHOTS', this.screenShots);
-      console.log(this.screenShots);
     },
   },
 };
