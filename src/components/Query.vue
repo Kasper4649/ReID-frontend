@@ -1,57 +1,54 @@
 <template>
   <div class="query">
-
-    <div class="input" v-if="!videoSrc">
-      <v-file-input
-        @change="handleChangeVideoInput"
-        color="accent-4"
-        label="File input"
-        placeholder="Select your file"
-        prepend-icon="mdi-paperclip"
-        outlined
-        accept="video/*"
-        clearable
-        v-model="files"
+    <v-container>
+      <v-row
+        v-if="!videoSrc"
       >
-      </v-file-input>
-    </div>
-    <div class="screenshot" v-if="videoSrc">
-      <video
-        height="300"
-        :src="videoSrc"
-        ref="video"
-        controls
+        <v-file-input
+          @change="handleChangeVideoInput"
+          color="accent-4"
+          label="File input"
+          placeholder="Select your file"
+          prepend-icon="mdi-paperclip"
+          outlined
+          accept="video/*"
+          clearable
+          v-model="files"
+        >
+        </v-file-input>
+      </v-row>
+
+      <v-row
+        v-if="videoSrc"
+        justify="center"
       >
-      </video>
+        <video
+          height="300px"
+          :src="videoSrc"
+          ref="video"
+          muted
+          controls
+        >
+        </video>
+      </v-row>
 
-      <v-btn
-        text
-        @click="screenShot"
+      <v-row
+        v-if="videoSrc"
+        justify="center"
+        class="pa-2"
       >
-        screenShot
-      </v-btn>
+        <v-btn
+          text
+          @click="screenShot"
+        >
+          screenShot
+        </v-btn>
+      </v-row>
 
-      <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card height="500px" width="500px">
-          <vueCropper
-            ref="cropper"
-            :img="imgSrc"
-            :outputType="option.outputType"
-            :info="true"
-            :autoCrop="option.autoCrop"
-            :centerBox="option.centerBox"
-            :high="option.high"
-          ></vueCropper>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-            <v-btn color="blue darken-1" text @click="saveScreenShot">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <div class="img" v-if="imgSrc !== []">
+      <v-row
+        v-if="imgs.length !== 0"
+        justify="center"
+      >
         <v-row>
           <v-col cols="6" md="8" offset-md="2">
             <v-card>
@@ -79,9 +76,35 @@
             </v-card>
           </v-col>
         </v-row>
-      </div>
+      </v-row>
 
-    </div>
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="600px"
+      >
+        <v-card
+          height="500px"
+          width="500px"
+        >
+          <vueCropper
+            ref="cropper"
+            :img="imgSrc"
+            :outputType="option.outputType"
+            :info="true"
+            :autoCrop="option.autoCrop"
+            :centerBox="option.centerBox"
+            :high="option.high"
+          ></vueCropper>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="darken-1" text @click="cancelScreenShot">Close</v-btn>
+            <v-btn color="darken-1" text @click="saveScreenShot">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-container>
   </div>
 </template>
 
@@ -136,11 +159,19 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         _this.imgs.push(URL.createObjectURL(data));
         _this.screenShots.push(
-          new File([data], parseInt(_this.videoTime)*25+'', { type: 'image/png' })
+          new File(
+            [data],
+            parseInt(_this.videoTime) * 25 + '',
+            { type: 'image/png' }
+          )
         );
       })
       this.dialog = false;
       this.$store.commit('SET_SCREENSHOTS', this.screenShots);
+    },
+    cancelScreenShot() {
+      this.dialog = false;
+      this.imgSrc = '';
     },
   },
 };

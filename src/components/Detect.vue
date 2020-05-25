@@ -1,14 +1,13 @@
 <template>
   <div class="detect">
-    <div class="screenshot">
-      <video
-        height="300"
-        :src="videoSrc"
-        ref="video"
-        controls
-      >
-      </video>
-    </div>
+    <video
+      :src="videoSrc"
+      autoplay
+      controls
+      height="300"
+      ref="video"
+    >
+    </video>
   </div>
 
 </template>
