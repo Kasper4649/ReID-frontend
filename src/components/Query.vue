@@ -23,7 +23,8 @@
         justify="center"
       >
         <video
-          height="300px"
+          width="100%"
+          height="100%"
           :src="videoSrc"
           ref="video"
           muted
@@ -49,43 +50,45 @@
         v-if="imgs.length !== 0"
         justify="center"
       >
-        <v-row>
-          <v-col cols="6" md="8" offset-md="2">
-            <v-card>
-              <v-container fluid>
-                <v-row>
-                  <v-col
-                    class="d-flex child-flex"
-                    cols="5"
-                    v-for="img in imgs"
-                    :key="img"
-                  >
-                    <v-card flat tile class="d-flex">
-                      <v-img
-                        :src="img"
-                        aspect-ratio="1"
-                        contain
-                        max-height="300px"
-                        class="lighten-2"
-                      >
-                      </v-img>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-          </v-col>
-        </v-row>
+        <v-col
+          cols="12"
+        >
+          <v-card>
+            <v-container fluid>
+              <v-row>
+                <v-col
+                  class="d-flex child-flex"
+                  cols="5"
+                  v-for="img in imgs"
+                  :key="img"
+                >
+                  <v-card flat tile class="d-flex">
+                    <v-img
+                      :src="img"
+                      aspect-ratio="1"
+                      contain
+                      height="100%"
+                      width="100%"
+                      class="lighten-2"
+                    >
+                    </v-img>
+                  </v-card>
+
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
       </v-row>
 
       <v-dialog
         v-model="dialog"
         persistent
-        max-width="600px"
+        max-width="700px"
       >
         <v-card
-          height="500px"
-          width="500px"
+          height="400px"
+          width="100%"
         >
           <vueCropper
             ref="cropper"
@@ -95,12 +98,13 @@
             :autoCrop="option.autoCrop"
             :centerBox="option.centerBox"
             :high="option.high"
-          ></vueCropper>
+          >
+          </vueCropper>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="darken-1" text @click="cancelScreenShot">Close</v-btn>
-            <v-btn color="darken-1" text @click="saveScreenShot">Save</v-btn>
+            <v-btn text @click="cancelScreenShot">Close</v-btn>
+            <v-btn text @click="saveScreenShot">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
